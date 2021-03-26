@@ -16,7 +16,7 @@ export default class Profile extends React.Component{
         const name = this.props.navigation.getParam('name')
         return(
             <View>
-                <Text style={styles.baseText}>{'DAte: ' + name}</Text>
+                <Text style={styles.baseText}>{'DAasdasdasdasdadte: ' + name}</Text>
                 <Text style={styles.secondText}>{'Joke: '}</Text>
                 <Text style={styles.thirdText}>{text}</Text>
             </View>   
