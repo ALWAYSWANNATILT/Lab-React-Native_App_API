@@ -20,7 +20,8 @@ export default class Profile extends React.Component{
                 <Text style={styles.secondText}>{'Joke: '}</Text>
                 <Text style={styles.thirdText}>{text}</Text>
             </View>   
-       
+            
+
         )
     }
 }
