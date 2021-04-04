@@ -4,6 +4,7 @@ import SQLite from 'react-native-sqlite-storage'
 
 const API_URL = 'https://api.chucknorris.io/jokes/search?query=dogs'
 const COLOR = '#0015b0'
+var db;
 
 export default class Home extends React.Component{
 
@@ -17,7 +18,7 @@ export default class Home extends React.Component{
         jokesList: []
         }
        
-        const db = await SQLite.openDatabase(
+            db =  SQLite.openDatabase(
             {   
             name: 'api',
             createFromLocation: '~api.db',
@@ -29,8 +30,8 @@ export default class Home extends React.Component{
         )
         };
 
-       async successToOpenDB(){
-            console.log("lol");
+       successToOpenDB(){
+            console.log("correct");
             db.transaction(tx=>{
                 tx.executeSql('SELECT * FROM api', [], (tx, results)=>{
                     let dataLength = results.row.length;
@@ -79,24 +80,12 @@ export default class Home extends React.Component{
                 keyExtractor={item => item.id}
                 renderItem={({item}) => (
                 <View style={styles.item}>
-                    <View style={{width: '15%'}}>
-                        <Image style={styles.tinyIcon}
-                        source={{uri: item.icon_url}}
-                        />
-                    </View>
+                   
                     <View style={{width: '85%'}}>
                         <Text style={{fontWeight: 'bold'}}>{item.created_at}</Text>
                         <Text style={{fontSize: 17}}>{item.value}</Text>
                     </View>
-                    <Button style={styles.button}
-                        onPress={() => this.props.navigation.navigate('Profile', {
-                        name: item.created_at,
-                        title: item.id,
-                        text: item.value})}
-                        title="Read"
-                        color="blue"
-                        accessibilityLabel="Details"
-                    />
+                    
                 </View>
                 )}
             />  }
