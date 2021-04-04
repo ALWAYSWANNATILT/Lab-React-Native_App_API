@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, Button, Text, View, FlatList, Image} from 'react-native';
+import SQLite from 'react-native-sqlite-storage'
 
 const API_URL = 'https://api.chucknorris.io/jokes/search?query=dogs'
 const COLOR = '#0015b0'
@@ -10,13 +11,53 @@ export default class Home extends React.Component{
         title: 'Second Lab',
     };
     constructor (props) {
+        
         super(props)
         this.state = {
         jokesList: []
         }
+       
+        const db = await SQLite.openDatabase(
+            {   
+            name: 'api',
+            createFromLocation: '~api.db',
+            location: 'default',
+            },
+
+            this.successToOpenDB.bind(this),
+            this.failToOpenDB,
+        )
+        };
+
+       async successToOpenDB(){
+            console.log("lol");
+            db.transaction(tx=>{
+                tx.executeSql('SELECT * FROM api', [], (tx, results)=>{
+                    let dataLength = results.row.length;
+                    if(dataLength>0){
+                        let helperArray = [];
+                        for(let i=0; i<results.rows.length; i++){
+                            helperArray.push(results.rows.item(i));
+                            
+                        }
+                        this.setState({
+                            jokesList:helperArray,
+                        });
+                    }
+               
+
+                })
+            })
+       
         }
+
+        failToOpenDB(err){
+            console.log(err);
+        }
+
+
         
-        componentDidMount () {
+     /*   componentDidMount () {
         this.apiCall()
         }
         
@@ -25,15 +66,14 @@ export default class Home extends React.Component{
         let json = await resp.json()
         this.setState({jokesList: json.result})
         }
-
+*/
     render(){
         const { navigate } = this.props.navigation;
 
         return(
-        <View style={styles.container}>
-
-
-            <FlatList
+      <View style={styles.container}>
+           
+            {<FlatList
                 ItemSeparatorComponent={() => <View style={styles.separator}/>}
                 data={this.state.jokesList}
                 keyExtractor={item => item.id}
@@ -59,7 +99,7 @@ export default class Home extends React.Component{
                     />
                 </View>
                 )}
-            />
+            />  }
         </View>
         )
             
