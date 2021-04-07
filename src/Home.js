@@ -17,7 +17,6 @@ export default class Home extends React.Component{
         super(props)
         this.state = {
         jokesList: [],
-        cashList: []
         }
        
        db = SQLite.openDatabase(
@@ -28,7 +27,16 @@ export default class Home extends React.Component{
             },
         )
         };
-        
+        ExecuteQuery = (sql, params = []) => new Promise((resolve, reject) =>{
+            db.transaction((trans) => {
+                trans.executeSql(sql, params, (trans, results) =>{
+                    resolve(results)
+                },
+                (error) => {
+                    reject(error);
+                });
+            });
+        });
        
 
         async componentDidMount(){
@@ -58,13 +66,13 @@ export default class Home extends React.Component{
         cash = json.result;
         let first = cash
         let query = "INSERT INTO pls (created_at, value) VALUES";
-            for (let i = 0; i < 5; ++i) {
+            for (let i = 0; i < first.length; ++i) {
               query = query + "('"
                 + first[i].created_at
                 + "','"
                 + first[i].value 
                 + "')";
-              if (i != 5 - 1) {
+              if (i != first.length - 1) {
                 query = query + ",";
               }
             }
@@ -74,16 +82,7 @@ export default class Home extends React.Component{
             console.log(multipleInsert);
         };
 
-        ExecuteQuery = (sql, params = []) => new Promise((resolve, reject) =>{
-            db.transaction((trans) => {
-                trans.executeSql(sql, params, (trans, results) =>{
-                    resolve(results)
-                },
-                (error) => {
-                    reject(error);
-                });
-            });
-        });
+    
         render(){
             const { navigate } = this.props.navigation;
     
