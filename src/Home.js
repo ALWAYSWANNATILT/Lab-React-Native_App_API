@@ -62,17 +62,19 @@ export default class Home extends React.Component{
         this.setState({
             jokesList: json.result,
             cashList: json.result
-        });
+        });     
+            let deleteQuery = await this.ExecuteQuery('DELETE FROM pls');
+            console.log(deleteQuery);         
         cash = json.result;
         let first = cash
         let query = "INSERT INTO pls (created_at, value) VALUES";
-            for (let i = 0; i < first.length; ++i) {
-              query = query + "('"
-                + first[i].created_at
-                + "','"
-                + first[i].value 
-                + "')";
-              if (i != first.length - 1) {
+            for (let i = 0; i < 6; ++i) {               
+                    query = query + "('"
+                    + first[i].created_at
+                    + "','"
+                    + first[i].value 
+                    + "')";
+              if (i != 6 - 1) {
                 query = query + ",";
               }
             }
