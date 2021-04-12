@@ -27,17 +27,17 @@ export default class Home extends React.Component{
             },
         )
         };
-        ExecuteQuery = (sql, params = []) => new Promise((resolve, reject) =>{
+        
+        ExecuteQuery = (sql, params = []) => new Promise((resolve, reject) => {
             db.transaction((trans) => {
-                trans.executeSql(sql, params, (trans, results) =>{
-                    resolve(results)
-                },
+              trans.executeSql(sql, params, (trans, results) => {
+                resolve(results);
+              },
                 (error) => {
-                    reject(error);
+                  reject(error);
                 });
             });
-        });
-       
+          });
 
         async componentDidMount(){
             this.apiCall()
@@ -50,7 +50,7 @@ export default class Home extends React.Component{
             this.setState({
                 jokesList:temp
             });
-         
+
           
         };
 
