@@ -1,6 +1,6 @@
 import React from 'react';
-import {StyleSheet, Button, Text, View, FlatList, Image,  TouchableOpacity,} from 'react-native';
-import { set } from 'react-native-reanimated';
+import {StyleSheet, TextInput, Container, Body, Button, Text, View, FlatList, Image, TouchableOpacity,} from 'react-native';
+import {Item, Input, Icon, Left, Right, Header} from 'native-base'
 import SQLite, { openDatabase } from 'react-native-sqlite-storage'
 
 const API_URL = 'https://api.chucknorris.io/jokes/search?query=dogs'
@@ -58,14 +58,15 @@ export default class Home extends React.Component{
         let resp = await fetch(API_URL)
         let json = await resp.json()
         let cash = [];
-
+        let search = json.result;
         this.setState({
             jokesList: json.result,
-            cashList: json.result
+            cashList: json.result,
+            usersFilter: search,
         });     
             let deleteQuery = await this.ExecuteQuery('DELETE FROM pls');
             console.log(deleteQuery);         
-        cash = json.result;
+        cash = json.result; 
         let first = cash
         let query = "INSERT INTO pls (created_at, value) VALUES";
             for (let i = 0; i < 6; ++i) {               
@@ -84,16 +85,27 @@ export default class Home extends React.Component{
             console.log(multipleInsert);
         };
 
+        searchUser(textToSearch){
+            this.setState({
+                usersFilter:this.state.jokesList.filter(i => 
+                    i.value.toLowerCase().includes(textToSearch.toLowerCase())),
+            });
+        }
     
         render(){
             const { navigate } = this.props.navigation;
     
-            return(
+            return(      
                 <View style={styles.container}>
-          
+                    <Header >
+                        <Item>
+                                <TextInput  style={styles.inpt}  placeholder="search" onChangeText={text=>{this.searchUser(text)}}/>
+                        </Item>
+                    </Header>
+                   
                 {<FlatList
                     ItemSeparatorComponent={() => <View style={styles.separator}/>}
-                    data={this.state.jokesList}
+                    data={this.state.usersFilter}
                     keyExtractor={item => item.id}
                     renderItem={({item}) => (
 
@@ -144,7 +156,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#CED0CE'
     },
     item: {
-    padding: 5,
+    paddingLeft: 10,
+        paddingRight: 10,
     },
     tinyIcon: {
     width: 60,
@@ -153,4 +166,10 @@ const styles = StyleSheet.create({
     button: {
     marginTop: 14,
     },
+    inpt:{
+    backgroundColor: 'white',
+    width: 350,
+    marginLeft: 10,
+    height: 40,
+    }
     })
